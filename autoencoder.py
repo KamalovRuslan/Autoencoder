@@ -5,6 +5,7 @@
 
 import ffnet
 from numpy import linalg as la
+import numpy as np
 
 
 class Autoencoder:
@@ -18,7 +19,7 @@ class Autoencoder:
         if self.net.layers[0].shape[0] != self.net.layers[-1].shape[1]:
             raise ValueError('In the given autoencoder number of inputs and outputs is different!')
 
-        self.hist = {'train_loss': []
+        self.hist = {'train_loss': [],
                      'train_grad': []}
 
     def compute_loss(self, inputs):
@@ -55,10 +56,10 @@ class Autoencoder:
         Rp_outputs = self.net.compute_Rp_outputs() / self.num_objects
         return self.net.compute_loss_grad(Rp_outputs)
 
-    def batch_generator(inputs, minibatch_size):
-        l = len(inputs)
+    def batch_generator(self, inputs, minibatch_size):
+        l = inputs.shape[1]
         for ndx in range(0, l, minibatch_size):
-            yield inputs[ndx:min(ndx + minibatch_size, l)]
+            yield inputs[:, ndx:min(ndx + minibatch_size, l)]
 
     def run_sgd(self, inputs, step_size=0.01, momentum=0.9, num_epoch=200,
                 minibatch_size=100, l2_coef=1e-5, test_inputs=None, display=False):
@@ -85,11 +86,11 @@ class Autoencoder:
         if test_inputs is not None:
             test_loss_list = []
             test_grad_list = []
-        batch_num = nputs.shape[1] / minibatch_size
+        batch_num = inputs.shape[1] / minibatch_size
         for epoch in range(num_epoch):
             train_loss = 0
             train_grad = 0
-            for batch in batch_generator(inputs, minibatch_size):
+            for batch in self.batch_generator(inputs, minibatch_size):
                 loss, loss_grad = self.compute_loss(batch)
                 loss_grad += l2_coef * w
                 train_loss += loss
@@ -151,7 +152,7 @@ class Autoencoder:
         for epoch in range(num_epoch):
             train_loss = 0
             train_grad = 0
-            for batch in batch_generator(inputs, minibatch_size):
+            for batch in self.batch_generator(inputs, minibatch_size):
                 loss, loss_grad = self.compute_loss(batch)
                 train_loss += loss
                 loss_grad += l2_coef * w
@@ -212,7 +213,7 @@ class Autoencoder:
         for epoch in range(num_epoch):
             train_loss = 0
             train_grad = 0
-            for batch in batch_generator(inputs, minibatch_size):
+            for batch in self.batch_generator(inputs, minibatch_size):
                 t += 1
                 loss, loss_grad = self.compute_loss(batch)
                 train_loss += loss

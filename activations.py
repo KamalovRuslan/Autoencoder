@@ -3,6 +3,7 @@
 
 # Implementation of activation functions used within neural networks
 from scipy.special import expit
+import numpy as np
 
 
 class BaseActivationFunction(object):
@@ -48,7 +49,7 @@ class SigmoidActivationFunction(BaseActivationFunction):
         return expit(inputs)
 
     def deriv(self, inputs):
-        _val = self.val(inouts)
+        _val = self.val(inputs)
         return _val * (1 - _val)
 
     def second_deriv(self, inputs):
@@ -59,10 +60,16 @@ class SigmoidActivationFunction(BaseActivationFunction):
 
 class ReluActivationFunction(BaseActivationFunction):
     def val(self, inputs):
-        return np.vectorize(lambda t: t if t > 0 else 0)
+        negative_indices = inputs < 0
+        inputs[negative_indices] = 0
+        return inputs
 
     def deriv(self, inputs):
-        return np.vectorize(lambda t: 1 if t > 0 else 0)
+        negative_indices = inputs < 0
+        inputs[negative_indices] = 0
+        positive_indices = inputs > 0
+        inputs[positive_indices] = 1
+        return inputs
 
     def second_deriv(self, inputs):
         return np.zeros_like(inputs)
