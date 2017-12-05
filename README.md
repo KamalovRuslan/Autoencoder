@@ -1,4 +1,5 @@
-***Autoencoder***
+# Autoencoder
+
 Autoencoder implementation and experiments.
 There are three optimization methods:
 - *SGD*
