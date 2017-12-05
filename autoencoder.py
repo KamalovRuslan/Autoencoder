@@ -6,6 +6,7 @@
 import ffnet
 from numpy import linalg as la
 import numpy as np
+import time
 
 
 class Autoencoder:
@@ -20,7 +21,12 @@ class Autoencoder:
             raise ValueError('In the given autoencoder number of inputs and outputs is different!')
 
         self.hist = {'train_loss': [],
-                     'train_grad': []}
+                     'train_grad': [],
+                     'test_loss':  [],
+                     'test_grad':  [],
+                     'epoch':      [],
+                     'optimizer':  "",
+                     'elaps_time': 0}
 
     def compute_loss(self, inputs):
         """
@@ -61,6 +67,10 @@ class Autoencoder:
         for ndx in range(0, l, minibatch_size):
             yield inputs[:, ndx:min(ndx + minibatch_size, l)]
 
+    def init_weights(self):
+        for layer in self.net.layers:
+            layer.init_normal_weights()
+
     def run_sgd(self, inputs, step_size=0.01, momentum=0.9, num_epoch=200,
                 minibatch_size=100, l2_coef=1e-5, test_inputs=None, display=False):
         """
@@ -79,6 +89,15 @@ class Autoencoder:
             'test_loss': loss values for testing sample after each epoch, list
             'test_grad': norm of loss gradients for testing sample after each peoch, list
         """
+        self.hist = {'train_loss': [],
+                     'train_grad': [],
+                     'test_loss':  [],
+                     'test_grad':  [],
+                     'epoch':      [],
+                     'optimizer':  "",
+                     'elaps_time': 0}
+
+        start_time = time.time()
         w = self.net.get_weights()
         d_w = np.zeros_like(w)
         train_loss_list = []
@@ -115,12 +134,14 @@ class Autoencoder:
                 if test_inputs is not None:
                     print('val_loss: {}'.format(test_loss_list[-1]))
                     print('val_loss_grad: {}'.format(test_grad_list[-1]))
-
         self.hist['train_loss'] = train_loss_list
         self.hist['train_grad'] = train_grad_list
         if test_inputs is not None:
             self.hist['test_loss'] = test_loss_list
             self.hist['test_grad'] = test_grad_list
+        self.hist['elaps_time'] = time.time() - start_time
+        self.hist['epoch'] = list(range(num_epoch))
+        self.hist['optimizer'] = "SGD"
         return self.hist
 
     def run_rmsprop(self, inputs, step_size=0.01, num_epoch=200,
@@ -140,6 +161,15 @@ class Autoencoder:
             'test_loss': loss values for testing sample after each epoch, list
             'test_grad': norm of loss gradients for testing sample after each peoch, list
         """
+        self.hist = {'train_loss': [],
+                     'train_grad': [],
+                     'test_loss':  [],
+                     'test_grad':  [],
+                     'epoch':      [],
+                     'optimizer':  "",
+                     'elaps_time': 0}
+
+        start_time = time.time()
         gamma, epsilon = .9, 1e-9
         w = self.net.get_weights()
         d_w = np.zeros_like(w)
@@ -182,6 +212,9 @@ class Autoencoder:
         if test_inputs is not None:
             self.hist['test_loss'] = test_loss_list
             self.hist['test_grad'] = test_grad_list
+        self.hist['elaps_time'] = time.time() - start_time
+        self.hist['epoch'] = list(range(num_epoch))
+        self.hist['optimizer'] = "RMSProp"
         return self.hist
 
     def run_adam(self, inputs, step_size=0.01, num_epoch=200,
@@ -201,6 +234,15 @@ class Autoencoder:
             'test_loss': loss values for testing sample after each epoch, list
             'test_grad': norm of loss gradients for testing sample after each peoch, list
         """
+        self.hist = {'train_loss': [],
+                     'train_grad': [],
+                     'test_loss':  [],
+                     'test_grad':  [],
+                     'epoch':      [],
+                     'optimizer':  "",
+                     'elaps_time': 0}
+
+        start_time = time.time()
         w = self.net.get_weights()
         b1, b2, epsilon = .001, .9, 1e-8
         train_loss_list = []
@@ -247,4 +289,7 @@ class Autoencoder:
         if test_inputs is not None:
             self.hist['test_loss'] = test_loss_list
             self.hist['test_grad'] = test_grad_list
+        self.hist['elaps_time'] = time.time() - start_time
+        self.hist['epoch'] = list(range(num_epoch))
+        self.hist['optimizer'] = "ADAM"
         return self.hist

@@ -65,8 +65,6 @@ class FFNet:
             raise TypeError('Input data must be given by a numpy array!')
 
         if inputs.shape[0] != self.layers[0].shape[0]:
-            print(inputs.shape[0])
-            print(self.layers[0].shape[0])
             raise ValueError('Input data size does not correspond to input size of the first layer!')
 
         for layer in self.layers:

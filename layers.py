@@ -92,6 +92,11 @@ class FCLayer(BaseLayer):
         size = shape if not use_bias else (shape[1], shape[0] + 1)
         self.W = normal(loc=0, scale=scale, size=size)
 
+    def init_normal_weights(self):
+        scale = (1. / (self.shape[0] + self.shape[1]))
+        size = shape if not self.use_bias else (self.shape[1], self.shape[0] + 1)
+        self.W = normal(loc=0, scale=scale, size=size)
+
     def get_params_number(self):
         if self.use_bias:
             return (self.shape[0] + 1) * self.shape[1]
