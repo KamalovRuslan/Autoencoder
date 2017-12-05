@@ -25,7 +25,7 @@ def plt_learn(hist_list, fname=None):
 def plt_representations(auenc, inputs, labels, fname=None):
     auenc.net.compute_outputs(inputs)
     mid_idx = int(len(auenc.net.layers) / 2) - 1
-    reprs = auenc.net.layers[mid_idx].get_activations().T
+    reprs = auenc.net.get_activations(mid_idx).T
 
     opt = auenc.hist['optimizer']
 
