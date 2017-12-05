@@ -25,8 +25,10 @@ l8 = layers.FCLayer(shape8, afuns.ReluActivationFunction(), use_bias=True)
 mnist = scipy.io.loadmat('./data/mnist-original.mat')
 data = mnist['data'].T
 labels = mnist['label'].T
+data = data[:20000, :]
+labels = labels[:20000, :]
 train, test, label_train, label_test = train_test_split(data, labels, test_size=0.33)
 
 layers = [l1, l2, l3, l4, l5, l6, l7, l8]
 autoenc = autoencoder.Autoencoder(layers)
-autoenc.run_sgd(train.T, test_inputs=test.T, display=True)
+autoenc.run_rmsprop(train.T, test_inputs=test.T, display=True)

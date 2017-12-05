@@ -163,7 +163,7 @@ class Autoencoder:
                 self.net.set_weights(w)
 
             train_loss_list.append(train_loss / batch_num)
-            train_grad_list.append(train_grad_list / batch_num)
+            train_grad_list.append(train_grad / batch_num)
             if test_inputs is not None:
                 test_loss, test_loss_grad = self.compute_loss(test_inputs)
                 test_loss_list.append(test_loss)
@@ -228,7 +228,7 @@ class Autoencoder:
                 self.net.set_weights(w)
 
             train_loss_list.append(train_loss / batch_num)
-            train_grad_list.append(train_grad_list / batch_num)
+            train_grad_list.append(train_grad / batch_num)
             if test_inputs is not None:
                 test_loss, test_loss_grad = self.compute_loss(test_inputs)
                 test_loss_list.append(test_loss)
