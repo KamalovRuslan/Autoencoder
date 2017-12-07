@@ -144,7 +144,6 @@ class FCLayer(BaseLayer):
         self.Rp_inputs = Rp_inputs
         if self.use_bias:
             self.Rp_inputs = np.vstack((Rp_inputs, np.zeros(Rp_inputs.shape[1])))
-
         self.Rp_u = self.W.dot(self.Rp_inputs) + self.p.dot(self.inputs)
         Rp_z = self.dg * self.Rp_u
         return Rp_z

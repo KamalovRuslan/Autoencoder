@@ -39,7 +39,6 @@ initial_weights = autoenc.net.get_weights()
 # SGD
 autoenc.net.set_weights(initial_weights)
 hist_sgd = autoenc.run_sgd(train.T, num_epoch=5, display=True)
-sys.exit(0)
 
 # RMSprop
 autoenc.net.set_weights(initial_weights)
