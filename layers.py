@@ -94,58 +94,65 @@ class FCLayer(BaseLayer):
 
     def init_normal_weights(self):
         scale = (1. / (self.shape[0] + self.shape[1]))
-        size = shape if not self.use_bias else (self.shape[1], self.shape[0] + 1)
+        if self.use_bias:
+            size = (self.shape[1], self.shape[0] + 1)
+        else:
+            size = (self.shape[1], self.shape[0] + 0)
         self.W = normal(loc=0, scale=scale, size=size)
 
     def get_params_number(self):
         if self.use_bias:
             return (self.shape[0] + 1) * self.shape[1]
         else:
-            return self.shape[0] * self.shape[1]
+            return (self.shape[0] + 0) * self.shape[1]
 
     def get_weights(self):
         return np.ravel(self.W)
 
     def set_weights(self, w):
-        self.W = w.reshape(self.shape[1], self.shape[0] + self.use_bias)
+        if self.use_bias:
+            self.W = w.reshape(self.shape[1], self.shape[0] + 1)
+        else:
+            self.W = w.reshape(self.shape[1], self.shape[0] + 0)
 
     def set_direction(self, p):
-        self.p = p.reshape(self.shape[1], self.shape[0] + self.use_bias)
+        if self.use_bias:
+            self.p = p.reshape(self.shape[1], self.shape[0] + 1)
+        else:
+            self.p = p.reshape(self.shape[1], self.shape[0] + 0)
 
     def get_activations(self):
-        return self.zL
+        return self.z
 
     def forward(self, inputs):
-        self.z = inputs
+        self.inputs = inputs
         if self.use_bias:
-            self.z = np.vstack((inputs, np.ones(inputs.shape[1])))
-
-        self.inputs = self.z
-        self.uL = self.W.dot(self.z)
-        self.zL = self.afun.val(self.uL)
-        return self.zL
+            self.inputs = np.vstack((inputs, np.ones(inputs.shape[1])))
+        self.u = self.W.dot(self.inputs)
+        self.z = self.afun.val(self.u)
+        return self.z
 
     def backward(self, derivs):
-        self.gz = derivs
-        self.deriv_uL = self.afun.deriv(self.uL)
-        self.gul = self.gz * self.deriv_uL
-        gwl = self.gul.dot(self.z.T)
-        gzl = self.W[:, :self.W.shape[1] - self.use_bias].T.dot(self.gul)
-        return gzl, np.ravel(gwl)
+        self.derivs = derivs
+        self.dg = self.afun.deriv(self.u)
+        self.dL_u = self.derivs * self.dg
+        dL_w = self.dL_u.dot(self.inputs.T)
+        dL_z = self.W[:, :self.W.shape[1] - self.use_bias].T.dot(self.dL_u)
+        return dL_z, np.ravel(dL_w)
 
     def Rp_forward(self, Rp_inputs):
-        self.Rpz = Rp_inputs
+        self.Rp_inputs = Rp_inputs
         if self.use_bias:
-            self.Rpz = np.vstack((Rp_inputs, np.zeros(Rp_inputs.shape[1])))
+            self.Rp_inputs = np.vstack((Rp_inputs, np.zeros(Rp_inputs.shape[1])))
 
-        self.Rpul = self.W.dot(self.Rpz) + self.p.dot(self.z)
-        Rpzl = self.deriv_uL * self.Rpul
-        return Rpzl
+        self.Rp_u = self.W.dot(self.Rp_inputs) + self.p.dot(self.inputs)
+        Rp_z = self.dg * self.Rp_u
+        return Rp_z
 
     def Rp_backward(self, Rp_derivs):
-        Rpdul = Rp_derivs * self.deriv_uL + \
-            self.gz * self.afun.second_deriv(self.uL) * self.Rpul
-        Rpdwl = Rpdul.dot(self.z.T) + self.gul.dot(self.Rpz.T)
-        Rpdzl = self.W[:, :self.W.shape[1] - self.use_bias].T.dot(Rpdul) +\
-            self.p[:, :self.p.shape[1] - self.use_bias].T.dot(self.gul)
-        return Rpdzl, np.ravel(Rpdwl)
+        Rp_dL_u = Rp_derivs * self.dg + \
+            self.derivs * self.afun.second_deriv(self.u) * self.Rp_u
+        Rp_dL_w = Rp_dL_u.dot(self.inputs.T) + self.dL_u.dot(self.Rp_inputs.T)
+        Rp_dL_z = self.W[:, :self.W.shape[1] - self.use_bias].T.dot(Rp_dL_u) +\
+            self.p[:, :self.p.shape[1] - self.use_bias].T.dot(self.dL_u)
+        return Rp_dL_z, np.ravel(Rp_dL_w)
