@@ -128,12 +128,20 @@ class Autoencoder:
                 test_grad_list.append(la.norm(test_loss_grad, 2))
 
             if display:
-                print('epoch: {}'.format(epoch))
-                print('loss: {}'.format(train_loss_list[-1]))
-                print('loss_grad: {}'.format(train_grad_list[-1]))
+                _loss = train_loss_list[-1]
+                _loss_grad = train_grad_list[-1]
+                info = 'epoch: {0}  loss: {1:.4f} loss_grad: {2:.4f}'.format(
+                        epoch,     _loss,        _loss_grad
+                        )
                 if test_inputs is not None:
-                    print('val_loss: {}'.format(test_loss_list[-1]))
-                    print('val_loss_grad: {}'.format(test_grad_list[-1]))
+                    _val_loss = test_loss_list[-1]
+                    _val_loss_grad = test_grad_list[-1]
+                    test_info = 'val_loss: {0:.4f} val_loss_grad: {1:.4f}'.format(
+                                _vall_loss,       _val_loss_grad
+                                )
+                    info += test_info
+                print(info)
+
         self.hist['train_loss'] = train_loss_list
         self.hist['train_grad'] = train_grad_list
         if test_inputs is not None:
@@ -200,12 +208,19 @@ class Autoencoder:
                 test_grad_list.append(la.norm(test_loss_grad, 2))
 
             if display:
-                print('epoch: {}'.format(epoch))
-                print('loss: {}'.format(train_loss_list[-1]))
-                print('loss_grad: {}'.format(train_grad_list[-1]))
+                _loss = train_loss_list[-1]
+                _loss_grad = train_grad_list[-1]
+                info = 'epoch: {0}  loss: {1:.4f} loss_grad: {2:.4f}'.format(
+                        epoch,     _loss,        _loss_grad
+                        )
                 if test_inputs is not None:
-                    print('val_loss: {}'.format(test_loss_list[-1]))
-                    print('val_loss_grad: {}'.format(test_grad_list[-1]))
+                    _val_loss = test_loss_list[-1]
+                    _val_loss_grad = test_grad_list[-1]
+                    test_info = 'val_loss: {0:.4f} val_loss_grad: {1:.4f}'.format(
+                                _vall_loss,       _val_loss_grad
+                                )
+                    info += test_info
+                print(info)
 
         self.hist['train_loss'] = train_loss_list
         self.hist['train_grad'] = train_grad_list
@@ -277,12 +292,19 @@ class Autoencoder:
                 test_grad_list.append(la.norm(test_loss_grad, 2))
 
             if display:
-                print('epoch: {}'.format(epoch))
-                print('loss: {}'.format(train_loss_list[-1]))
-                print('loss_grad: {}'.format(train_grad_list[-1]))
+                _loss = train_loss_list[-1]
+                _loss_grad = train_grad_list[-1]
+                info = 'epoch: {0}  loss: {1:.4f} loss_grad: {2:.4f}'.format(
+                        epoch,     _loss,        _loss_grad
+                        )
                 if test_inputs is not None:
-                    print('val_loss: {}'.format(test_loss_list[-1]))
-                    print('val_loss_grad: {}'.format(test_grad_list[-1]))
+                    _val_loss = test_loss_list[-1]
+                    _val_loss_grad = test_grad_list[-1]
+                    test_info = 'val_loss: {0:.4f} val_loss_grad: {1:.4f}'.format(
+                                _vall_loss,       _val_loss_grad
+                                )
+                    info += test_info
+                print(info)
 
         self.hist['train_loss'] = train_loss_list
         self.hist['train_grad'] = train_grad_list

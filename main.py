@@ -38,15 +38,15 @@ initial_weights = autoenc.net.get_weights()
 
 # SGD
 autoenc.net.set_weights(initial_weights)
-hist_sgd = autoenc.run_sgd(train.T, num_epoch=5, display=True)
+hist_sgd = autoenc.run_sgd(train.T, num_epoch=500, display=True)
 
 # RMSprop
 autoenc.net.set_weights(initial_weights)
-hist_rmsprop = autoenc.run_rmsprop(train.T, num_epoch=3, display=True)
+hist_rmsprop = autoenc.run_rmsprop(train.T, num_epoch=500, display=True)
 
 # ADAM
 autoenc.net.set_weights(initial_weights)
-hist_adam = autoenc.run_rmsprop(train.T, num_epoch=3, display=True)
+hist_adam = autoenc.run_rmsprop(train.T, num_epoch=500, display=True)
 
 # utils.plt_learn([hist_sgd, hist_rmsprop, hist_adam])
 # utils.plt_representations(autoenc, test.T, label_test)
