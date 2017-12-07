@@ -32,6 +32,12 @@ class BaseActivationFunction(object):
         """
         raise NotImplementedError('This function must be implemented within child class!')
 
+    def get_name(self):
+        """
+        Name of activation function
+        """
+        raise NotImplementedError('This function must be implemented within child class!')
+
 
 class LinearActivationFunction(BaseActivationFunction):
     def val(self, inputs):
@@ -40,8 +46,11 @@ class LinearActivationFunction(BaseActivationFunction):
     def deriv(self, inputs):
         return np.ones_like(inputs)
 
-    def second_deriv(delf, inputs):
+    def second_deriv(self, inputs):
         return np.zeros_like(inputs)
+
+    def get_name(self):
+        return "LinearActivationFunction"
 
 
 class SigmoidActivationFunction(BaseActivationFunction):
@@ -56,6 +65,9 @@ class SigmoidActivationFunction(BaseActivationFunction):
         _val = self.deriv(inputs)
         _deriv = self.val(inputs)
         return _deriv(1 - 2 * _val)
+
+    def get_name(self):
+        return "SigmoidActivationFunction"
 
 
 class ReluActivationFunction(BaseActivationFunction):
@@ -73,3 +85,6 @@ class ReluActivationFunction(BaseActivationFunction):
 
     def second_deriv(self, inputs):
         return np.zeros_like(inputs)
+
+    def get_name(self):
+        return "ReluActivationFunction"

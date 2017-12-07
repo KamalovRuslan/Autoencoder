@@ -71,6 +71,20 @@ class Autoencoder:
         for layer in self.net.layers:
             layer.init_normal_weights()
 
+    def summary(self):
+        print("Layers number: {}".format(len(self.net.layers)))
+        total_params_number = 0
+        for i, layer in enumerate(self.net.layers):
+            afun_name = layer.afun.get_name()
+            shape = layer.shape
+            params_n = layer.get_params_number()
+            total_params_number += params_n
+            info = "layer_{0} | activation {1:25s} | shape {2:10s} | params number {3}".format(
+                    i+1,      afun_name,     str(shape),    params_n
+            )
+            print(info)
+        print("Total params number: {}". format(total_params_number))
+
     def run_sgd(self, inputs, step_size=0.01, momentum=0.9, num_epoch=200,
                 minibatch_size=100, l2_coef=1e-5, test_inputs=None, display=False):
         """
@@ -97,6 +111,8 @@ class Autoencoder:
                      'optimizer':  "",
                      'elaps_time': 0}
 
+        self.summary()
+        print("\nOptimizer SGD\n")
         start_time = time.time()
         w = self.net.get_weights()
         d_w = np.zeros_like(w)
@@ -176,7 +192,8 @@ class Autoencoder:
                      'epoch':      [],
                      'optimizer':  "",
                      'elaps_time': 0}
-
+        self.summary()
+        print("\nOptimizer RMSProp\n")
         start_time = time.time()
         gamma, epsilon = .9, 1e-9
         w = self.net.get_weights()
@@ -256,7 +273,8 @@ class Autoencoder:
                      'epoch':      [],
                      'optimizer':  "",
                      'elaps_time': 0}
-
+        self.summary()
+        print("\nOptimizer Adam\n")
         start_time = time.time()
         w = self.net.get_weights()
         b1, b2, epsilon = .001, .9, 1e-8
