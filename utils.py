@@ -18,8 +18,7 @@ def plt_learn(hist_list, fname=None):
     if fname is not None:
         fig.savefig(os.path.join('./img', fname))
         plt.close(fig)
-    else:
-        plt.show()
+    plt.show()
 
 
 def plt_representations(auenc, inputs, labels, fname=None):

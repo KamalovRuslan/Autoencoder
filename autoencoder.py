@@ -27,6 +27,7 @@ class Autoencoder:
                      'epoch':      [],
                      'optimizer':  "",
                      'elaps_time': 0}
+        self.summary()
 
     def compute_loss(self, inputs):
         """
@@ -111,8 +112,10 @@ class Autoencoder:
                      'optimizer':  "",
                      'elaps_time': 0}
 
-        self.summary()
-        print("\nOptimizer SGD\n")
+        if momentum:
+            print("\nOptimizer SGD momentum\n")
+        else:
+            print("\nOptimizer SGD\n")
         start_time = time.time()
         w = self.net.get_weights()
         d_w = np.zeros_like(w)
@@ -152,8 +155,8 @@ class Autoencoder:
                 if test_inputs is not None:
                     _val_loss = test_loss_list[-1]
                     _val_loss_grad = test_grad_list[-1]
-                    test_info = 'val_loss: {0:.4f} val_loss_grad: {1:.4f}'.format(
-                                _vall_loss,       _val_loss_grad
+                    test_info = ' val_loss: {0:.4f} val_loss_grad: {1:.4f}'.format(
+                                _val_loss,       _val_loss_grad
                                 )
                     info += test_info
                 print(info)
@@ -165,7 +168,11 @@ class Autoencoder:
             self.hist['test_grad'] = test_grad_list
         self.hist['elaps_time'] = time.time() - start_time
         self.hist['epoch'] = list(range(num_epoch))
-        self.hist['optimizer'] = "SGD"
+        if momentum:
+            self.hist['optimizer'] = "SGD_momentum"
+        else:
+            self.hist['optimizer'] = "SGD"
+        print("Elapsed time: {}".format(self.hist['elaps_time']))
         return self.hist
 
     def run_rmsprop(self, inputs, step_size=0.01, num_epoch=200,
@@ -192,7 +199,6 @@ class Autoencoder:
                      'epoch':      [],
                      'optimizer':  "",
                      'elaps_time': 0}
-        self.summary()
         print("\nOptimizer RMSProp\n")
         start_time = time.time()
         gamma, epsilon = .9, 1e-9
@@ -233,8 +239,8 @@ class Autoencoder:
                 if test_inputs is not None:
                     _val_loss = test_loss_list[-1]
                     _val_loss_grad = test_grad_list[-1]
-                    test_info = 'val_loss: {0:.4f} val_loss_grad: {1:.4f}'.format(
-                                _vall_loss,       _val_loss_grad
+                    test_info = ' val_loss: {0:.4f} val_loss_grad: {1:.4f}'.format(
+                                _val_loss,       _val_loss_grad
                                 )
                     info += test_info
                 print(info)
@@ -247,6 +253,7 @@ class Autoencoder:
         self.hist['elaps_time'] = time.time() - start_time
         self.hist['epoch'] = list(range(num_epoch))
         self.hist['optimizer'] = "RMSProp"
+        print("Elapsed time: {}".format(self.hist['elaps_time']))
         return self.hist
 
     def run_adam(self, inputs, step_size=0.01, num_epoch=200,
@@ -273,7 +280,6 @@ class Autoencoder:
                      'epoch':      [],
                      'optimizer':  "",
                      'elaps_time': 0}
-        self.summary()
         print("\nOptimizer Adam\n")
         start_time = time.time()
         w = self.net.get_weights()
@@ -318,8 +324,8 @@ class Autoencoder:
                 if test_inputs is not None:
                     _val_loss = test_loss_list[-1]
                     _val_loss_grad = test_grad_list[-1]
-                    test_info = 'val_loss: {0:.4f} val_loss_grad: {1:.4f}'.format(
-                                _vall_loss,       _val_loss_grad
+                    test_info = ' val_loss: {0:.4f} val_loss_grad: {1:.4f}'.format(
+                                _val_loss,       _val_loss_grad
                                 )
                     info += test_info
                 print(info)
@@ -332,4 +338,5 @@ class Autoencoder:
         self.hist['elaps_time'] = time.time() - start_time
         self.hist['epoch'] = list(range(num_epoch))
         self.hist['optimizer'] = "ADAM"
+        print("Elapsed time: {}".format(self.hist['elaps_time']))
         return self.hist

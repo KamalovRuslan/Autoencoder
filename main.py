@@ -1,3 +1,6 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
 import autoencoder
 import layers
 import activations as afuns
@@ -36,17 +39,21 @@ autoenc = autoencoder.Autoencoder(layers)
 
 initial_weights = autoenc.net.get_weights()
 
+# SGD momentum
+autoenc.net.set_weights(initial_weights)
+hist_sgd_m = autoenc.run_sgd(train.T, num_epoch=50, display=True)
+
 # SGD
 autoenc.net.set_weights(initial_weights)
-hist_sgd = autoenc.run_sgd(train.T, num_epoch=500, display=True)
+hist_sgd_m = autoenc.run_sgd(train.T, momentum=0, num_epoch=50, display=True)
 
 # RMSprop
 autoenc.net.set_weights(initial_weights)
-hist_rmsprop = autoenc.run_rmsprop(train.T, num_epoch=500, display=True)
+hist_rmsprop = autoenc.run_rmsprop(train.T, num_epoch=50, display=True)
 
 # ADAM
 autoenc.net.set_weights(initial_weights)
-hist_adam = autoenc.run_rmsprop(train.T, num_epoch=500, display=True)
+hist_adam = autoenc.run_adam(train.T, num_epoch=50, display=True)
 
-# utils.plt_learn([hist_sgd, hist_rmsprop, hist_adam])
+utils.plt_learn([hist_sgd_m, hist_sgd, hist_rmsprop, hist_adam])
 # utils.plt_representations(autoenc, test.T, label_test)
